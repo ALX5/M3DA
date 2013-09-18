@@ -67,6 +67,8 @@ build/
 *.sbr
 *.tlb
 *.tli
+*.doc
+*.docx
 *.tlh
 *.tmp
 *.tmp_proj
@@ -90,6 +92,9 @@ ipch/
 *.psess
 *.vsp
 *.vspx
+
+# Compte-Rendu
+Compte-Rendu.pdf
 
 # Guidance Automation Toolkit
 *.gpState

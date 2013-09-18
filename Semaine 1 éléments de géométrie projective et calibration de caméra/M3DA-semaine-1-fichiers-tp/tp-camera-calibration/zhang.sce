@@ -49,8 +49,12 @@ b = SmallestRightSingular(V);
 A = IntrinsicMatrix(b);
 iA = inv(A);
 // Estimations des matrices extrinseques
-E = zeros(3, 4, ni);
+E = zeros(3, 4);
 for i = 1:ni
   E(:,:,i) = ExtrinsicMatrix(iA, H(:,:,i));
 end
 
+E1 = E(:,:,1);
+E2 = E(:,:,2);
+E3 = E(:,:,3);
+E4 = E(:,:,4);
