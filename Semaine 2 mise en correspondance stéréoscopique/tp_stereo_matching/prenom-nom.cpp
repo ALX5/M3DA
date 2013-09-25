@@ -27,6 +27,8 @@ using namespace cv;
 #include "glue.hpp"
 #include "prenom-nom.hpp"
 
+#include <iostream>
+
 #include "QDebug";
 
 // -----------------------------------------------------------------------
@@ -38,13 +40,15 @@ using namespace cv;
 // -----------------------------------------------------------------------
 Mat iviDetectCorners(const Mat& mImage,
                      int iMaxCorners) {
-    // A modifier !
+    vector<Point2d> corners;
+    cv::goodFeaturesToTrack(mImage,corners,iMaxCorners,0.01,10,Mat(),3,false,0.04);
     double tx = mImage.cols, ty = mImage.rows;
-    Mat mCorners = (Mat_<double>(3,4) <<
-        .25 * tx, .75 * tx, .25 * tx, .75 * tx,
-        .25 * ty, .25 * ty, .75 * ty, .75 * ty,
-        1., 1., 1., 1.
-        );
+    Mat mCorners = Mat_<double>(3,corners.size());
+    for(int i=0; i<corners.size(); i++) {
+        mCorners.at<double>(0,i)=corners.at(i).x;
+        mCorners.at<double>(1,i)=corners.at(i).y;
+        mCorners.at<double>(2,i)=1;
+    }
     // Retour de la matrice
     return mCorners;
 }
@@ -58,13 +62,13 @@ Mat iviDetectCorners(const Mat& mImage,
 Mat iviVectorProductMatrix(const Mat& v) {
     Mat mVectorProduct = Mat::eye(3, 3, CV_64F);
     mVectorProduct.at<double>(0,0)= 0;
-    mVectorProduct.at<double>(0,1)= v.at<double>(2);
-    mVectorProduct.at<double>(0,2)= -v.at<double>(1);
-    mVectorProduct.at<double>(1,0)= -v.at<double>(2);
+    mVectorProduct.at<double>(0,1)= -v.at<double>(0,2);
+    mVectorProduct.at<double>(0,2)= v.at<double>(0,1);
+    mVectorProduct.at<double>(1,0)= v.at<double>(0,2);
     mVectorProduct.at<double>(1,1)= 0;
-    mVectorProduct.at<double>(1,2)= v.at<double>(0);
-    mVectorProduct.at<double>(2,0)= v.at<double>(1);
-    mVectorProduct.at<double>(2,1)= -v.at<double>(0);
+    mVectorProduct.at<double>(1,2)= -v.at<double>(0,0);
+    mVectorProduct.at<double>(2,0)= -v.at<double>(0,1);
+    mVectorProduct.at<double>(2,1)= v.at<double>(0,0);
     mVectorProduct.at<double>(2,2)= 0;
     // Retour de la matrice
     return mVectorProduct;
@@ -83,10 +87,23 @@ Mat iviFundamentalMatrix(const Mat& mLeftIntrinsic,
                          const Mat& mLeftExtrinsic,
                          const Mat& mRightIntrinsic,
                          const Mat& mRightExtrinsic) {
-    // A modifier !
-    // F = I*E
     // Doit utiliser la fonction iviVectorProductMatrix
     Mat mFundamental = Mat::eye(3, 3, CV_64F);
+
+    Mat eye3x4 = Mat::eye(3, 4, CV_64F);
+
+    Mat o = Mat::eye(4, 1, CV_64F);
+    o.at<double>(0,0)=0;
+    o.at<double>(1,0)=0;
+    o.at<double>(2,0)=0;
+    o.at<double>(3,0)=1;
+
+    Mat O1 = mLeftExtrinsic.inv()*o;
+
+    Mat P1 = mLeftIntrinsic*eye3x4*mLeftExtrinsic;
+    Mat P2 = mRightIntrinsic*eye3x4*mRightExtrinsic;
+
+    mFundamental = iviVectorProductMatrix(P2*O1)*P2*P1.inv(DECOMP_SVD);
     // Retour de la matrice fondamentale
     return mFundamental;
 }
@@ -103,8 +120,22 @@ Mat iviFundamentalMatrix(const Mat& mLeftIntrinsic,
 Mat iviDistancesMatrix(const Mat& m2DLeftCorners,
                        const Mat& m2DRightCorners,
                        const Mat& mFundamental) {
-    // A modifier !
-    Mat mDistances = Mat();
+    double distance1 = 0.0; double distance2 = 0.0;
+    Mat mDistances = Mat(m2DLeftCorners.cols,m2DRightCorners.cols,CV_64F);
+    for(int i=0; i<m2DLeftCorners.cols; i++) {
+        Mat m1 = m2DLeftCorners.col(i);
+        Mat d2 = mFundamental*m1;
+        for(int j=0; j<m2DRightCorners.cols; j++) {
+            Mat m2 = m2DRightCorners.col(j);
+            Mat d1 = mFundamental.t()*m2;
+            distance1 = std::abs(m1.at<double>(0)*d1.at<double>(0)+m1.at<double>(1)*d1.at<double>(1)+d1.at<double>(2))
+                    /std::sqrt(std::pow(d1.at<double>(0),2)+std::pow(d1.at<double>(1),2));
+            distance2 = std::abs(m2.at<double>(0)*d2.at<double>(0)+m2.at<double>(1)*d2.at<double>(1)+d2.at<double>(2))
+                     /std::sqrt(std::pow(d2.at<double>(0),2)+std::pow(d2.at<double>(1),2));
+            mDistances.at<double>(i,j)=distance1+distance2;
+        }
+    }
+    //std::cout << mDistances << std::endl;
     // Retour de la matrice fondamentale
     return mDistances;
 }
