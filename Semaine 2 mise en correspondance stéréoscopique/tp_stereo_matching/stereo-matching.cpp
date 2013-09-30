@@ -27,9 +27,7 @@ Inclure les fichiers d'entete
 #include <getopt.h>
 using namespace cv;
 #include "glue.hpp"
-#include "Alexis-Linke.hpp"
-
-#include "QDebug";
+#include "prenom-nom.hpp"
 
 /* --------------------------------------------------------------------------
 Macros
