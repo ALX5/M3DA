@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+            "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>m3da_nurbs</TITLE>
+
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<META name="GENERATOR" content="hevea 1.10">
+<STYLE type="text/css">
+.li-itemize{margin:1ex 0ex;}
+.li-enumerate{margin:1ex 0ex;}
+.dd-description{margin:0ex 0ex 1ex 4ex;}
+.dt-description{margin:0ex;}
+.toc{list-style:none;}
+.thefootnotes{text-align:left;margin:0ex;}
+.dt-thefootnotes{margin:0em;}
+.dd-thefootnotes{margin:0em 0em 0em 2em;}
+.footnoterule{margin:1em auto 1em 0px;width:50%;}
+.caption{padding-left:2ex; padding-right:2ex; margin-left:auto; margin-right:auto}
+.title{margin:2ex auto;text-align:center}
+.center{text-align:center;margin-left:auto;margin-right:auto;}
+.flushleft{text-align:left;margin-left:0ex;margin-right:auto;}
+.flushright{text-align:right;margin-left:auto;margin-right:0ex;}
+DIV TABLE{margin-left:inherit;margin-right:inherit;}
+PRE{text-align:left;margin-left:0ex;margin-right:auto;}
+BLOCKQUOTE{margin-left:4ex;margin-right:4ex;text-align:left;}
+TD P{margin:0px;}
+.boxed{border:1px solid black}
+.textboxed{border:1px solid black}
+.vbar{border:none;width:2px;background-color:black;}
+.hbar{border:none;height:2px;width:100%;background-color:black;}
+.hfill{border:none;height:1px;width:200%;background-color:black;}
+.vdisplay{border-collapse:separate;border-spacing:2px;width:auto; empty-cells:show; border:2px solid red;}
+.vdcell{white-space:nowrap;padding:0px;width:auto; border:2px solid green;}
+.display{border-collapse:separate;border-spacing:2px;width:auto; border:none;}
+.dcell{white-space:nowrap;padding:0px;width:auto; border:none;}
+.dcenter{margin:0ex auto;}
+.vdcenter{border:solid #FF8000 2px; margin:0ex auto;}
+.minipage{text-align:left; margin-left:0em; margin-right:auto;}
+.marginpar{border:solid thin black; width:20%; text-align:left;}
+.marginparleft{float:left; margin-left:0ex; margin-right:1ex;}
+.marginparright{float:right; margin-left:1ex; margin-right:0ex;}
+.theorem{text-align:left;margin:1ex auto 1ex 0ex;}
+.part{margin:2ex auto;text-align:center}
+.lstlisting{font-family:monospace;white-space:pre;margin-right:auto;margin-left:0pt;text-align:left}
+</STYLE>
+
+<link rel="stylesheet" href="tdtp.css" type="text/css">
+</HEAD>
+<BODY >
+<!--HEVEA command line is: /usr/bin/hevea -entities style.hva m3da_nurbs.tex -o m3da_nurbs.html -->
+<!--CUT DEF section 1 --><TABLE CELLSPACING=6 CELLPADDING=0><TR><TD ALIGN=center NOWRAP><IMG SRC="img/univ-lille1_petite.png"></TD></TR>
+<TR><TD ALIGN=center NOWRAP><B>Master IVI</B> 2013-2014</TD></TR>
+</TABLE><DIV CLASS="center"><B><FONT SIZE=4>M3DA
+</FONT></B></DIV><P>
+<BR>
+<BR>
+</P><DIV CLASS="center"><FONT SIZE=5><B>TP B-Splines/NURBS</B></FONT></DIV><P>Reprenez le squelette Qt <A HREF="nurbs.zip">nurbs.zip</A>
+</P><UL CLASS="itemize"><LI CLASS="li-itemize">
+Ouvrir le projet C++/Qt <CODE>nurbs</CODE><CODE>.</CODE><CODE>pro</CODE> qui se trouve dans le répertoire <CODE>nurbs</CODE>.
+</LI><LI CLASS="li-itemize">Ce projet contient le strict minimum pour l’ouverture d’une fenêtre de tracé OpenGL :
+<UL CLASS="itemize"><LI CLASS="li-itemize">
+<CODE>main</CODE><CODE>.</CODE><CODE>cpp</CODE> : ouvre la fenêtre principale de l’application (gérée par <CODE>MainWindow</CODE><CODE>.</CODE><CODE>cpp</CODE>).
+</LI><LI CLASS="li-itemize"><CODE>MainWindow</CODE><CODE>.</CODE><CODE>cpp</CODE> se contente d’inclure une fenêtre <CODE>OpenGL</CODE> dans la fenêtre principale (gérée par <CODE>GLView</CODE><CODE>.</CODE><CODE>cpp</CODE>).
+</LI><LI CLASS="li-itemize"><CODE>GLView</CODE><CODE>.</CODE><CODE>cpp</CODE> : fenêtre OpenGL avec les fonctionnalités suivantes :
+<UL CLASS="itemize"><LI CLASS="li-itemize">
+<CODE>GLView</CODE><CODE>::</CODE><CODE>initData</CODE> : recevra les initialisations nécessaires à votre application (appelée une fois à l’ouverture de la fenêtre).
+</LI><LI CLASS="li-itemize"><CODE>GLView</CODE><CODE>::</CODE><CODE>updateData</CODE> : contiendra les mises à jour que vous jugerez nécessaires entre 2 tracés (appelée régulièrement toutes les 20ms). Elle provoque, à la fin, le message de mise à jour de la fenêtre OpenGL.
+</LI><LI CLASS="li-itemize"><CODE>GLView</CODE><CODE>::</CODE><CODE>paintGL</CODE> : point d’entrée de tous vos tracés (message de mise à jour lors de updateData).
+</LI><LI CLASS="li-itemize">Les interactions se feront à la souris (dans <CODE>GLView</CODE><CODE>::</CODE><CODE>mousePressEvent</CODE>,<BR>
+<CODE>GLView</CODE><CODE>::</CODE><CODE>mouseMotionEvent</CODE>, <CODE>mouseReleaseEvent</CODE>) ou au clavier (dans <CODE>GLView</CODE><CODE>::</CODE><CODE>keyPressEvent</CODE>, <CODE>GLView</CODE><CODE>::</CODE><CODE>keyReleaseEvent</CODE>).
+</LI></UL>
+</LI><LI CLASS="li-itemize"><CODE>UtilGL.cpp</CODE> simplifie l’affichage de texte dans la fenêtre OpenGL (par exemple<BR>
+<CODE>ugl</CODE><CODE>::</CODE><CODE>drawText</CODE><CODE>("</CODE><CODE>coucou</CODE><CODE>",0,0);</CODE>).
+</LI><LI CLASS="li-itemize">Enfin, les boutons sur la gauche de l’interface appellent les méthodes <CODE>GLView::choice1, GLView::choice2, ...</CODE> et doivent correspondrent aux questions à illustrer (vous en ajouterez autant que nécessaire : cf <CODE>MainWindow</CODE> pour la définition des boutons).
+</LI></UL>
+</LI></UL><P><B>Remarques :</B>
+</P><UL CLASS="itemize"><LI CLASS="li-itemize">
+Il ne s’agit pas d’un TP openGL : toute librairie de tracé conviendrait (ici on propose de l’openGL 2.1 rudimentaire; cf <CODE>GLView::paintGL</CODE> pour quelques exemples de tracés).
+</LI><LI CLASS="li-itemize">On se contente d’un tracé de courbe 2D : la matrice de projection OpenGL est orthogonale (volume de visualisation normalisé avec des coordonnées dans [−1,1]).
+</LI><LI CLASS="li-itemize">Pensez à faire vos propres classes (notamment faire une classe <CODE>Vector2</CODE> pour les opérations sur les points (x,y), que vous pouvez enrichir au fur et à mesure des besoins, et que vous pourrez reprendre d’un tp sur l’autre). 
+</LI></UL><P><BR>
+
+<FONT COLOR="#004CFF"><B><U>Exercice 1. B-Splines</U></B></FONT><BR>
+
+
+Une B-Spline est définie par :
+</P><UL CLASS="itemize"><LI CLASS="li-itemize">
+<I>n</I>+1 points de contrôle : (<I>P</I><SUB>0</SUB>,<I>P</I><SUB>1</SUB>,<I>P</I><SUB>2</SUB>,…,<I>P</I><SUB><I>n</I></SUB>)
+</LI><LI CLASS="li-itemize">Le degré <I>p</I> de la courbe souhaitée.
+</LI><LI CLASS="li-itemize">un ensemble de valeurs <I>t</I> appelées noeuds : vecteur nodal <I>v</I><SUB><I>t</I></SUB>=[<I>t</I><SUB>0</SUB>=<I>t</I><SUB><I>min</I></SUB>,<I>t</I><SUB>1</SUB>,<I>t</I><SUB>2</SUB>,…,<I>t</I><SUB><I>n</I>+1+<I>p</I></SUB>=<I>t</I><SUB><I>max</I></SUB>] 
+</LI><LI CLASS="li-itemize">avec Nombre de noeuds = degré + nombre de points de contrôle+1
+</LI><LI CLASS="li-itemize">Les points <I>P</I>(<I>t</I>) de la courbe (<I>t</I> décrivant l’intervalle [<I>t</I><SUB><I>p</I></SUB>,<I>t</I><SUB><I>n</I>+1</SUB>]) sont alors définis par la formulation :
+</LI></UL><TABLE CLASS="display dcenter"><TR VALIGN="middle"><TD CLASS="dcell">
+<I>P</I>(<I>t</I>)=</TD><TD CLASS="dcell"><TABLE CLASS="display"><TR><TD CLASS="dcell" ALIGN="center"><I>n</I></TD></TR>
+<TR><TD CLASS="dcell" ALIGN="center"><FONT SIZE=6>∑</FONT></TD></TR>
+<TR><TD CLASS="dcell" ALIGN="center"><I>k</I>=0</TD></TR>
+</TABLE></TD><TD CLASS="dcell"> <I>N</I><SUB><I>k</I>,<I>p</I></SUB>(<I>t</I>)<I>P</I><SUB><I>k</I></SUB>   avec  <I>t</I> ∈ [<I>t</I><SUB><I>p</I></SUB>,<I>t</I><SUB><I>n</I>+1</SUB>]
+    (1)</TD></TR>
+</TABLE><UL CLASS="itemize"><LI CLASS="li-itemize">
+La fonction <I>N</I><SUB><I>k</I>,<I>p</I></SUB> est construite itérativement (formule de Cox de Boor):</LI><LI CLASS="li-itemize">pour <I>p</I>=0 :
+<TABLE CLASS="display dcenter"><TR VALIGN="middle"><TD CLASS="dcell">
+<I>N</I><SUB><I>k</I>,0</SUB>(<I>t</I>) = </TD><TD CLASS="dcell">⎧<BR>
+⎨<BR>
+⎩</TD><TD CLASS="dcell"><TABLE CELLSPACING=6 CELLPADDING=0><TR><TD ALIGN=left NOWRAP>    1  si  <I>t</I> ∈ [<I>t</I><SUB><I>k</I></SUB>,<I>t</I><SUB><I>k</I>+1</SUB>[ </TD></TR>
+<TR><TD ALIGN=left NOWRAP>    0  sinon</TD></TR>
+</TABLE></TD><TD CLASS="dcell">
+    (2)</TD></TR>
+</TABLE></LI><LI CLASS="li-itemize">Au degré <I>p</I> (cas général) :
+<TABLE CLASS="display dcenter"><TR VALIGN="middle"><TD CLASS="dcell">
+<I>N</I><SUB><I>k</I>,<I>p</I></SUB>=</TD><TD CLASS="dcell"><TABLE CLASS="display"><TR><TD CLASS="dcell" ALIGN="center"><I>t</I>−<I>t</I><SUB><I>k</I></SUB></TD></TR>
+<TR><TD CLASS="hbar"></TD></TR>
+<TR><TD CLASS="dcell" ALIGN="center"><I>t</I><SUB><I>k</I>+<I>p</I></SUB>−<I>t</I><SUB><I>k</I></SUB></TD></TR>
+</TABLE></TD><TD CLASS="dcell"><I>N</I><SUB><I>k</I>,<I>p</I>−1</SUB>+</TD><TD CLASS="dcell"><TABLE CLASS="display"><TR><TD CLASS="dcell" ALIGN="center"><I>t</I><SUB><I>p</I>+<I>k</I>+1</SUB>−<I>t</I></TD></TR>
+<TR><TD CLASS="hbar"></TD></TR>
+<TR><TD CLASS="dcell" ALIGN="center"><I>t</I><SUB><I>k</I>+<I>p</I>+1</SUB>−<I>t</I><SUB><I>k</I>+1</SUB></TD></TR>
+</TABLE></TD><TD CLASS="dcell"><I>N</I><SUB><I>k</I>+1,<I>p</I>−1</SUB>
+    (3)</TD></TR>
+</TABLE>
+</LI></UL><P>Avec pour convention 0/0=0 dans le cas d’une multiplicité de noeuds.</P><P><FONT COLOR="blue"><B>Question 1. </B></FONT>
+Faire une classe <CODE>Nurbs</CODE> : intégrez pour le moment uniquement un tableau pour représenter le vecteur nodal (i.e. <CODE>std::vector&lt;double&gt; _knot</CODE> par exemple). Inclure une méthode pour initialiser un vecteur nodal périodique uniforme pour <I>m</I> points de contrôles et un degré <I>p</I>. (Exemple : <CODE>myNurbs.initialize(3,4)</CODE> affectera le vecteur <I>nodal</I>=(1,2,3,4,5,6,7,8); rappel : m+p+1=nombre de valeurs nodales nécessaires; conservez dans un champ le dégré de la courbe).</P><P><FONT COLOR="blue"><B>Question 2. </B></FONT>
+Faire une méthode qui évalue <I>N</I>(<I>k</I>,<I>p</I>,<I>t</I>) en <I>t</I> (solution directe : le faire en récursif en traduisant directement le calcul de Cox-DeBoor; solution subsidiaire : le faire en itératif (évolution dynamique d’un tableau)).</P><P><FONT COLOR="blue"><B>Question 3. </B></FONT>
+Faire une méthode <CODE>drawN</CODE><CODE>(</CODE><CODE>k</CODE><CODE>,</CODE><CODE>p</CODE><CODE>)</CODE> qui trace la représentation graphique de (<I>t</I>,<I>N</I><SUB><I>k</I>,<I>p</I></SUB>(<I>t</I>)) pour <I>t</I> ∈ [<I>t</I><SUB><I>min</I></SUB>,<I>t</I><SUB><I>max</I></SUB>[ : faites ce tracé sur la motié gauche de la fenêtre OpenGL (soit avec <CODE>glViewport</CODE>, soit avec <CODE>glOrtho</CODE>). Faites en sorte que les noeuds soient marqués sur l’abscisse.</P><P>Exemples d’affichage possible (pour un vecteur uniforme à 6 valeurs) :</P><TABLE CELLSPACING=6 CELLPADDING=0><TR><TD ALIGN=center NOWRAP>
+<DIV CLASS="minipage">
+
+<DIV CLASS="center">
+<IMG SRC="img/N01.png">
+</DIV>
+
+</DIV>
+</TD><TD ALIGN=center NOWRAP>
+<DIV CLASS="minipage">
+
+<DIV CLASS="center">
+<IMG SRC="img/N21.png">
+</DIV>
+
+</DIV>
+</TD><TD ALIGN=center NOWRAP>
+<DIV CLASS="minipage">
+
+<DIV CLASS="center">
+<IMG SRC="img/N22.png">
+</DIV>
+
+</DIV></TD></TR>
+<TR><TD ALIGN=center NOWRAP><I>N</I><SUB>0,1</SUB></TD><TD ALIGN=center NOWRAP><I>N</I><SUB>2,1</SUB></TD><TD ALIGN=center NOWRAP><I>N</I><SUB>2,2</SUB></TD></TR>
+</TABLE><P><FONT COLOR="blue"><B>Question 4. </B></FONT>
+Faire une méthode pour tracer la représentation graphique de tous les <I>N</I><SUB><I>k</I>,<I>p</I></SUB> pour un vecteur nodal donné et un degré <I>p</I> donné (en faisant varier <I>k</I>).</P><TABLE CELLSPACING=6 CELLPADDING=0><TR><TD ALIGN=center NOWRAP>
+<DIV CLASS="minipage">
+
+<DIV CLASS="center">
+<IMG SRC="img/bspline_deg2.png">
+</DIV>
+
+</DIV>
+</TD><TD ALIGN=center NOWRAP>
+<DIV CLASS="minipage">
+
+<DIV CLASS="center">
+<IMG SRC="img/bspline_deg3.png">
+</DIV>
+
+</DIV></TD></TR>
+<TR><TD ALIGN=center NOWRAP>degré 2</TD><TD ALIGN=center NOWRAP>degré 3</TD></TR>
+</TABLE><P><FONT COLOR="blue"><B>Question 5. </B></FONT>
+Pour le vecteur nodal = [1,2,3,4,5,6,7], quels sont les <I>N</I><SUB><I>k</I>,<I>p</I></SUB> qui sont non nuls pour <I>t</I>=3.5 pour <I>p</I>=1, pour <I>p</I>=2 et pour <I>p</I>=3 ? Quels sont alors les numéros des points de contrôles qui influenceront la forme de la courbe en <I>t</I>=3.5 ?</P><P><FONT COLOR="blue"><B>Question 6. </B></FONT>
+Faire une classe <CODE>Vector2</CODE> avec, notamment, opérateur + et * avec des réels; exemple de tutorial sur la surcharge : <A HREF="http://en.wikibooks.org/wiki/C++_Programming/Operators/Operator_Overloading">ici</A>).</P><P><FONT COLOR="blue"><B>Question 7. </B></FONT>
+Ajoutez à la classe <CODE>Nurbs</CODE> un tableau de points de contrôle. <B>Faire</B> une procédure qui trace le polygone de contrôle sur la partie droite de la fenêtre graphique (tester avec 4 points de contrôles initialisés à la main).</P><P><FONT COLOR="blue"><B>Question 8. </B></FONT>
+Faire la méthode <CODE>Nurbs::evalBSpline(t)</CODE> qui évalue le point de la courbe B-spline en <I>t</I>.</P><P><FONT COLOR="blue"><B>Question 9. </B></FONT>
+Tracer la B-spline (par une approximation avec des segments). Faites ce tracé sur la moitié droite de la fenêtre graphique.</P><TABLE CELLSPACING=6 CELLPADDING=0><TR><TD ALIGN=center NOWRAP>
+<DIV CLASS="minipage">
+
+<DIV CLASS="center">
+<IMG SRC="img/bspline_cd2.png">
+</DIV>
+
+</DIV></TD></TR>
+<TR><TD ALIGN=center NOWRAP>B-Spline uniforme de degré 2</TD></TR>
+</TABLE><P><FONT COLOR="blue"><B>Question 10. </B></FONT>
+Faites une animation d’un point qui parcourt l’intervalle du vecteur nodal (à droite : parcours de la courbe <I>P</I>(<I>t</I>), et à gauche, parcours de l’abscisse <I>t</I>).</P><P><FONT COLOR="blue"><B>Question 11. </B></FONT>
+Testez avec un vecteur nodal non uniforme (faites varier, par exemple un <I>t</I><SUB><I>i</I></SUB> entre <I>t</I><SUB><I>i</I>−1</SUB> et <I>t</I><SUB><I>i</I>+1</SUB>).</P><P><FONT COLOR="blue"><B>Question 12. </B></FONT>
+Testez avec un B-spline uniforme ouverte (les noeuds de départ et de fin ont une multiplicité égale au degré+1) : exemple degré 2, et 4 points de contrôle : vecteur nodal =[0,0,0,1,2,2,2].</P><P><FONT COLOR="blue"><B>Question 13. </B></FONT>
+Comment obtenir une courbe de Bézier définie par 5 points de contrôle ? tracez là.</P><P><BR>
+
+<FONT COLOR="#004CFF"><B><U>Exercice 2. NURBS</U></B></FONT><BR>
+
+
+
+
+</P><P><FONT COLOR="blue"><B>Question 1. </B></FONT>
+Passez aux NURBS : il suffit de rajouter une 3 ième coordonnée <I>w</I> homogène aux points de contrôle, et après le calcul d’un point de la courbe, il faut diviser par la coordonnée homogène <I>w</I>. <B>N’oubliez pas </B> que si un point de contrôle est aux coordonnées (<I>x</I>,<I>y</I>) et de poids <I>w</I>, le point de contrôle doit être defini par (<I>xw</I>,<I>yw</I>,<I>w</I>).</P><P><FONT COLOR="blue"><B>Question 2. </B></FONT>
+Testez l’affichage d’une nurbs avec des poids distincts.</P><P><FONT COLOR="blue"><B>Question 3. </B></FONT>
+Testez avec 7 points de contrôles organisés en triangle équilatéral comme suit :</P><DIV CLASS="center">
+<IMG SRC="img/nurbs.png">
+</DIV><P>pour tracer une NURBS de degré 2, avec un vecteur nodal = [0,0,0,1,1,2,2,3,3,3]. Le poids pour <I>P</I>1,<I>P</I>3 et <I>P</I>5 étant égaux à <I>cos</I> 60<SUP><I>o</I></SUP> (les autres avec un poids de 1).</P><P>Vérifiez visuellement que vous obtenez ainsi un cercle.</P><P><FONT COLOR="blue"><B>Question 4. </B></FONT>
+Proposez les interactions suivantes (vous pouvez compléter <CODE>GLView::keyPressEvent</CODE> et <CODE>mousePressEvent</CODE> du squelette pour les interactions clavier/souris) :
+</P><OL CLASS="enumerate" type=1><LI CLASS="li-enumerate">
+Affectez à 1 touche : création d’une B-Spline uniforme ouverte (création d’un vecteur nodal avec une multiplicité de degré+1 aux bornes)
+</LI><LI CLASS="li-enumerate">Proposez une interaction à la souris pour ajouter/contrôler les points de contrôle.
+</LI><LI CLASS="li-enumerate">Affectez à 1 touche : création d’une bézier à <I>n</I>+1 points est une B-spline dont le vecteur nodal possède 2<I>n</I>+2 valeurs : la première et la dernière étant de multiplicité <I>n</I>+1 : testez
+</LI><LI CLASS="li-enumerate">Affectez à 2 touches du claviers : augmentation du degré (B-Spline uniforme ouverte).
+</LI><LI CLASS="li-enumerate">Proposez une interaction pour contrôler le poids d’un point pour une NURBS (click gauche = sélection et 2 touches pour faire varier par exemple).
+</LI><LI CLASS="li-enumerate">Proposez une interaction à la souris pour contrôler le vecteur nodal (mouvement des noeuds sur l’axe des <I>t</I>).
+</LI></OL><!--CUT END -->
+<!--HTMLFOOT-->
+<!--ENDHTML-->
+<!--FOOTER-->
+<HR SIZE=2><BLOCKQUOTE CLASS="quote"><EM>Ce document a été traduit de L<sup>A</sup>T<sub>E</sub>X par </EM><A HREF="http://hevea.inria.fr"><EM>H</EM><EM><FONT SIZE=2><sup>E</sup></FONT></EM><EM>V</EM><EM><FONT SIZE=2><sup>E</sup></FONT></EM><EM>A</EM></A></BLOCKQUOTE></BODY>
+</HTML>

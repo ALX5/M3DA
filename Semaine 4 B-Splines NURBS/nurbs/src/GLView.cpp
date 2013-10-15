@@ -150,7 +150,9 @@ void GLView::keyReleaseEvent(QKeyEvent *event) {
   init/update data
   **/
 void GLView::initData() {
-    _nurbs->initialize(3,4);
+    _p=2;
+    _m=4;
+    _choice=0;
 }
 
 void GLView::updateData() {
@@ -169,30 +171,45 @@ void GLView::updateData() {
 
 
 
-void GLView::paintGL() {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glPushMatrix();
-  _nurbs->drawN(2,1);
-  glPopMatrix();
+void GLView::paintGL() {    
+    _nurbs->initialize(_m,_p);
+    if(_choice==1) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glPushMatrix();
+        _nurbs->drawAllN(_p);
+
+        // Question 5
+        /*
+         * Nk,p nuls pour t = 3.5 :
+         * p=1 : N(0,1), N(3,1), N(4,1)
+         * p=2 : N(3,2)
+         * p=3 : /
+         */
+        glPopMatrix();
+        _choice=0;
+    }
+    if(_choice==2) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glPushMatrix();
+        vector<Vector2> P = {Vector2(1,0),Vector2(2,0.7),Vector2(3,0.8),Vector2(5,0.5),Vector2(4,0.3)};
+        _nurbs->drawAllN(_p);
+        _nurbs->drawControlPolygone(P);
+        _nurbs->drawBSpline(P,_p);
+        glPopMatrix();
+        _choice=0;
+    }
+    if(_choice==3) {}
+    if(_choice==4) {}
+    if(_choice==5) {}
 }
 
 /** ********************************************************************** **/
 
-void GLView::choice1() {
-  cout << "choice 1 " << endl;
-}
-void GLView::choice2() {
-  cout << "choice 2 " << endl;
-}
-void GLView::choice3() {
-  cout << "choice 3 " << endl;
-}
-void GLView::choice4() {
-  cout << "choice 4 " << endl;
-}
-void GLView::choice5() {
-  cout << "choice 5 " << endl;
-}
+void GLView::choice1() { _choice=1; }
+void GLView::choice2() { _choice=2; }
+void GLView::choice3() { _choice=3; }
+void GLView::choice4() { _choice=4; }
+void GLView::choice5() { _choice=5; }
 
 
 

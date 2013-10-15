@@ -109,15 +109,11 @@ Mat iviComputeLeftSSDCost(const Mat& mLeftGray,
                           int iShift,
                           int iWindowHalfSize) {
     Mat mLeftSSDCost(mLeftGray.size(), CV_64F);
-    for(int i=iWindowHalfSize; i<mLeftGray.rows; i++) {
-        for(int j=iWindowHalfSize; j<mLeftGray.cols; j++) {
-            for(int wx=i-iWindowHalfSize; wx<i+iWindowHalfSize; wx++) {
-                for(int wy=j-iWindowHalfSize; wy<j+iWindowHalfSize; wy++) {
-                    mLeftSSDCost.at<double>(i,j)+=std::pow(mLeftGray.at<double>(i+wx,j+wy)-mRightGray.at<double>(i+wx,j+wy-iShift),2);
-                }
-            }
-        }
-    }
+    for(int i=iWindowHalfSize; i<mLeftGray.rows; i++)
+        for(int j=iWindowHalfSize; j<mLeftGray.cols; j++)
+            for(int wx=-iWindowHalfSize; wx<=iWindowHalfSize; wx++)
+                for(int wy=-iWindowHalfSize; wy<=iWindowHalfSize; wy++)
+                    mLeftSSDCost.at<double>(i,j)+=std::pow((double)mLeftGray.at<unsigned char>(i+wx,j+wy)-(double)mRightGray.at<unsigned char>(i+wx,j+wy-iShift),2);
     return mLeftSSDCost;
 }
 
@@ -136,27 +132,23 @@ Mat iviRightDisparityMap(const Mat& mLeftGray,
                          const Mat& mRightGray,
                          int iMaxDisparity,
                          int iWindowHalfSize) {
-    // Images pour les resultats intermediaires
-    Mat mSSD(mRightGray.size(), CV_64F);
-    Mat mMinSSD(mRightGray.size(), CV_64F);
-    Mat mRightDisparityMap(mRightGray.size(), CV_8U);
-    double dMinSSD, *pdPtr1, *pdPtr2;
-    unsigned char *pucDisparity;
-    int iShift, iRow, iCol;
+// Images pour les resultats intermediaires
+Mat mSSD(mRightGray.size(), CV_64F);
+Mat mMinSSD(mRightGray.size(), CV_64F);
+Mat mRightDisparityMap(mRightGray.size(), CV_8U);
+double dMinSSD, *pdPtr1, *pdPtr2;
+unsigned char *pucDisparity;
+int iShift, iRow, iCol;
 
         // Initialisation de l'image du minimum de SSD
         dMinSSD = pow((double)(2 * iWindowHalfSize + 1), 2.0) * 512.0;
-        for (iRow = iWindowHalfSize;
-            iRow < mMinSSD.size().height - iWindowHalfSize;
-            iRow++) {
+        for (iRow = iWindowHalfSize; iRow < mMinSSD.size().height - iWindowHalfSize; iRow++) {
             // Pointeur sur le debut de la ligne
             pdPtr1 = mMinSSD.ptr<double>(iRow);
             // Sauter la demi fenetre non utilisee
             pdPtr1 += iWindowHalfSize;
             // Remplir le reste de la ligne
-            for (iCol = iWindowHalfSize;
-                iCol < mMinSSD.size().width - iWindowHalfSize;
-                iCol++)
+            for (iCol = iWindowHalfSize; iCol < mMinSSD.size().width - iWindowHalfSize; iCol++)
                     *pdPtr1++ = dMinSSD;
         }
         // Boucler pour tous les decalages possibles
@@ -165,9 +157,7 @@ Mat iviRightDisparityMap(const Mat& mLeftGray,
             mSSD = iviComputeRightSSDCost(mLeftGray, mRightGray,
                                          iShift, iWindowHalfSize);
             // Mettre a jour les valeurs minimales
-            for (iRow = iWindowHalfSize;
-                iRow < mMinSSD.size().height - iWindowHalfSize;
-                iRow++) {
+            for (iRow = iWindowHalfSize; iRow < mMinSSD.size().height - iWindowHalfSize; iRow++) {
                 // Pointeurs vers les debuts des lignes
                 pdPtr1 = mMinSSD.ptr<double>(iRow);
                 pdPtr2 = mSSD.ptr<double>(iRow);
@@ -177,9 +167,7 @@ Mat iviRightDisparityMap(const Mat& mLeftGray,
                 pdPtr2 += iWindowHalfSize;
                 pucDisparity += iWindowHalfSize;
                 // Comparer sur le reste de la ligne
-                for (iCol = iWindowHalfSize;
-                    iCol < mMinSSD.size().width - iWindowHalfSize;
-                    iCol++) {
+                for (iCol = iWindowHalfSize; iCol < mMinSSD.size().width - iWindowHalfSize; iCol++) {
                     // SSD plus faible que le minimum precedent
                     if (*pdPtr1 > *pdPtr2) {
                         *pucDisparity = (unsigned char)iShift;
@@ -190,7 +178,6 @@ Mat iviRightDisparityMap(const Mat& mLeftGray,
                 }
             }
         }
-        std::cout << "mMinSSD : " << mMinSSD << std::endl;
     return mRightDisparityMap;
 }
 
@@ -210,15 +197,12 @@ Mat iviComputeRightSSDCost(const Mat& mLeftGray,
                            int iShift,
                            int iWindowHalfSize) {
     Mat mRightSSDCost(mRightGray.size(), CV_64F);
-    for(int i=iWindowHalfSize; i<mRightGray.rows; i++) {
-        for(int j=iWindowHalfSize; j<mRightGray.cols; j++) {
-            for(int wx=i-iWindowHalfSize; wx<i+iWindowHalfSize; wx++) {
-                for(int wy=j-iWindowHalfSize; wy<j+iWindowHalfSize; wy++) {
-                    mRightSSDCost.at<double>(i,j)+=std::pow(mRightGray.at<double>(i+wx,j+wy)-mLeftGray.at<double>(i+wx-iShift,j+wy),2);
-                }
-            }
-        }
-    }
+    for(int i=iWindowHalfSize; i<mRightGray.rows; i++)
+        for(int j=iWindowHalfSize; j<mRightGray.cols; j++)
+            for(int wx=-iWindowHalfSize; wx<=iWindowHalfSize; wx++)
+                for(int wy=-iWindowHalfSize; wy<=iWindowHalfSize; wy++)
+                    mRightSSDCost.at<double>(i,j)+=std::pow((double)mRightGray.at<unsigned char>(i+wx,j+wy)-(double)mLeftGray.at<unsigned char>(i+wx,j+wy+iShift),2);
+
     return mRightSSDCost;
 }
 
@@ -235,21 +219,18 @@ Mat iviLeftRightConsistency(const Mat& mLeftDisparity,
                             const Mat& mRightDisparity,
                             Mat& mValidityMask) {
     Mat mDisparity(mLeftDisparity.size(), CV_8U);
-    /*for(int i=0; i<mLeftDisparity.rows; i++) {
-        for(int j=0; j<mLeftDisparity.cols; j++) {
-            int xr = i-mLeftDisparity.at<double>(i,j);
-            std::cout << "i :" << i << std::endl;
-            std::cout << "j :" << j << std::endl;
-            std::cout << "xr :" << xr << std::endl;
-            if(mRightDisparity.at<double>(xr,j)==mLeftDisparity.at<double>(xr+mRightDisparity.at<double>(xr,j),j)) {
-                std::cout << "ici" << std::endl;
-                mValidityMask.at<double>(i,j)=0;
-            }
-            else {
-                std::cout << "là" << std::endl;
-                mValidityMask.at<double>(i,j)=255;
-            }
+    for(int i=0; i<mLeftDisparity.rows; i++)
+    {
+        for(int j=0; j<mLeftDisparity.cols; j++)
+        {
+            unsigned char dr = mLeftDisparity.at<unsigned char>(i,j+mRightDisparity.at<unsigned char>(i,j));
+            unsigned char dl = mRightDisparity.at<unsigned char>(i,j-mLeftDisparity.at<unsigned char>(i,j));
+            if(dr==dl)
+                mValidityMask.at<unsigned char>(i,j)=0;
+            else
+                mValidityMask.at<unsigned char>(i,j)=255;
+            if (mValidityMask.at<unsigned char>(i,j)==0) mDisparity.at<unsigned char>(i,j)=dl;
         }
-    }*/
+    }
     return mDisparity;
 }

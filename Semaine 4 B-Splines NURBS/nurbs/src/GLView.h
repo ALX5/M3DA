@@ -34,8 +34,15 @@ public:
   //! initialize data application
   void initData();
 
+  // Degré.
+  int _p;
+
+  // Nombre de points de contrôles.
+  int _m;
 
   Nurbs* _nurbs;
+
+  int _choice;
 
 
 protected:
