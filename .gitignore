@@ -15,7 +15,10 @@ local.properties
 .classpath
 .settings/
 .loadpath
+
+# build des projets Qt
 nurbs-build-desktop-Qt_4_8_3_dans_le_PATH__Syst_me__Release/
+implicite-build-desktop-Qt_4_8_3_dans_le_PATH__Syst_me__Release
 
 # External tool builders
 .externalToolBuilders/

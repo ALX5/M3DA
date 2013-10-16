@@ -23,6 +23,7 @@ public:
     void runThroughCurves(vector<Vector2> P, int p);
     void initializeNotUniformNodalVector(int m, int p);
 
+
     // Tableau représentant le vecteur nodal.
     vector<double> _knot;
 

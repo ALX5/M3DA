@@ -6,8 +6,7 @@
 
 #include "GLView.h"
 #include <iostream>
-
-#include "nurbs.h";
+#include <QPushButton>
 
 using namespace std;
 using namespace prog3d;
@@ -15,8 +14,10 @@ using namespace prog3d;
 
 /// ctor
 GLView::GLView(QWidget *parent) : QGLWidget(parent) {
-    _nurbs=new Nurbs();
+
   setFocusPolicy(Qt::StrongFocus); // this widget can now catch the keyboard events
+
+  _choice=1;
 }
 
 
@@ -150,9 +151,6 @@ void GLView::keyReleaseEvent(QKeyEvent *event) {
   init/update data
   **/
 void GLView::initData() {
-    _p=2;
-    _m=4;
-    _choice=0;
 }
 
 void GLView::updateData() {
@@ -170,53 +168,85 @@ void GLView::updateData() {
 **/
 
 
+void GLView::drawChoice0() {
+  /// drawing example
 
-void GLView::paintGL() {    
-    _nurbs->initialize(_m,_p);
-    if(_choice==1) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glPushMatrix();
-        _nurbs->drawAllN(_p);
+  glColor3f(0,0.5,1);
+  ugl::drawText("drawChoice0: "+_choiceText,0,0);
 
-        // Question 5
-        /*
-         * Nk,p nuls pour t = 3.5 :
-         * p=1 : N(0,1), N(3,1), N(4,1)
-         * p=2 : N(3,2)
-         * p=3 : /
-         */
-        glPopMatrix();
-        _choice=0;
-    }
-    if(_choice==2) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glPushMatrix();
-        vector<Vector2> P = {Vector2(1,0),Vector2(2,0.7),Vector2(3,0.8),Vector2(5,0.5),Vector2(4,0.3)};
-        _nurbs->drawAllN(_p);
-        _nurbs->drawControlPolygone(P);
-        _nurbs->drawBSpline(P,_p);
-        glPopMatrix();
-        _choice=0;
-    }
-    if(_choice==3) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glPushMatrix();
-        vector<Vector2> P = {Vector2(1,0),Vector2(2,0.7),Vector2(3,0.8),Vector2(5,0.5),Vector2(4,0.3)};
-        _nurbs->runThroughCurves(P,_p);
-        glPopMatrix();
-        _choice=0;
-    }
-    if(_choice==4) {}
-    if(_choice==5) {}
+  glPushMatrix();
+
+  glColor3f(1,0,0);
+  ugl::drawText("vertex ",0.2,0.2); // coordinates for drawText are (0,0) for top-left and (1,1) for bottom-right (not related to glOrtho)
+
+  glLineWidth(3);
+  glColor3f(0,1,0);
+  glBegin(GL_LINE_STRIP);
+  glVertex2f(0,-0.5);
+  glVertex2f(-0.5,0.5);
+  glVertex2f(0.5,0.5);
+  glVertex2f(0,-0.5);
+  glEnd();
+
+  glPointSize(10);
+  glColor3f(0,0,1);
+  glBegin(GL_POINTS);
+  glVertex2f(0,-0.5);
+  glVertex2f(-0.5,0.5);
+  glVertex2f(0.5,0.5);
+  glEnd();
+
+
+  glPopMatrix();
+}
+
+void GLView::drawChoice1() {
+  glColor3f(0,0.2,1);
+  ugl::drawText("drawChoice1 :"+_choiceText,0,0);
+
+  /// drawing example
+  glPushMatrix();
+
+  glColor3f(1,0,0);
+
+  glLineWidth(3);
+  glColor3f(0,1,0);
+  glBegin(GL_LINE_STRIP);
+  glVertex2f(-0.8,-0.8);
+  glVertex2f(0.8,-0.8);
+  glVertex2f(0.8,0.8);
+  glVertex2f(-0.8,0.8);
+  glVertex2f(-0.8,-0.8);
+  glEnd();
+
+
+  glPopMatrix();
+}
+
+void GLView::paintGL() {
+  /// clears the window
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+  /// choice example
+  switch(_choice) {
+    case 0:
+      /// call the drawing method for the clicked button 0 ...
+      drawChoice0();
+      break;
+    case 1:
+      /// call the drawing method for the clicked button 1 ...
+      drawChoice1();
+      break;
+  }
+
 }
 
 /** ********************************************************************** **/
 
-void GLView::choice1() { _choice=1; }
-void GLView::choice2() { _choice=2; }
-void GLView::choice3() { _choice=3; }
-void GLView::choice4() { _choice=4; }
-void GLView::choice5() { _choice=5; }
-
-
-
+void GLView::choice(int i,const string &s) {
+  // i = button number, s = button text
+  cout << "choice " << i << " " << s << endl;
+  _choice=i;
+  _choiceText=s;
+}
