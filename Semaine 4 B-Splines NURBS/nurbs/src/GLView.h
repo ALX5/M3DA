@@ -40,8 +40,16 @@ public:
   // Nombre de points de contrôles.
   int _m;
 
+  // Noeuds.
+  double _t;
+
+  // Points de contrôles.
+  vector<Vector2> _P;
+
+  // Instance de nurbs.
   Nurbs* _nurbs;
 
+  // Correspond au bouton "cliqué".
   int _choice;
 
 

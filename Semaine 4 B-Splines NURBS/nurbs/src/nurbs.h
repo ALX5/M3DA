@@ -20,9 +20,8 @@ public:
     void drawControlPolygone(vector<Vector2> controlPoints);
     Vector2 evalBSpline(double t, int p);
     void drawBSpline(vector<Vector2> P, int p);
-    void runThroughCurves(vector<Vector2> P, int p);
+    void runThroughCurves(int p, double t);
     void initializeNotUniformNodalVector(int m, int p);
-
 
     // Tableau représentant le vecteur nodal.
     vector<double> _knot;

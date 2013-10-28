@@ -151,6 +151,7 @@ void GLView::keyReleaseEvent(QKeyEvent *event) {
   init/update data
   **/
 void GLView::initData() {
+    _grid = Grid(10,10);
 }
 
 void GLView::updateData() {
@@ -167,79 +168,20 @@ void GLView::updateData() {
   Drawings
 **/
 
-
-void GLView::drawChoice0() {
-  /// drawing example
-
-  glColor3f(0,0.5,1);
-  ugl::drawText("drawChoice0: "+_choiceText,0,0);
-
-  glPushMatrix();
-
-  glColor3f(1,0,0);
-  ugl::drawText("vertex ",0.2,0.2); // coordinates for drawText are (0,0) for top-left and (1,1) for bottom-right (not related to glOrtho)
-
-  glLineWidth(3);
-  glColor3f(0,1,0);
-  glBegin(GL_LINE_STRIP);
-  glVertex2f(0,-0.5);
-  glVertex2f(-0.5,0.5);
-  glVertex2f(0.5,0.5);
-  glVertex2f(0,-0.5);
-  glEnd();
-
-  glPointSize(10);
-  glColor3f(0,0,1);
-  glBegin(GL_POINTS);
-  glVertex2f(0,-0.5);
-  glVertex2f(-0.5,0.5);
-  glVertex2f(0.5,0.5);
-  glEnd();
-
-
-  glPopMatrix();
-}
-
-void GLView::drawChoice1() {
-  glColor3f(0,0.2,1);
-  ugl::drawText("drawChoice1 :"+_choiceText,0,0);
-
-  /// drawing example
-  glPushMatrix();
-
-  glColor3f(1,0,0);
-
-  glLineWidth(3);
-  glColor3f(0,1,0);
-  glBegin(GL_LINE_STRIP);
-  glVertex2f(-0.8,-0.8);
-  glVertex2f(0.8,-0.8);
-  glVertex2f(0.8,0.8);
-  glVertex2f(-0.8,0.8);
-  glVertex2f(-0.8,-0.8);
-  glEnd();
-
-
-  glPopMatrix();
-}
-
 void GLView::paintGL() {
   /// clears the window
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+  glPushMatrix();
+  glOrtho(-1.1,1.1,-1.1,1.1,-1,1);
   /// choice example
   switch(_choice) {
-    case 0:
-      /// call the drawing method for the clicked button 0 ...
-      drawChoice0();
-      break;
-    case 1:
-      /// call the drawing method for the clicked button 1 ...
-      drawChoice1();
-      break;
+    case 0: {
+      _grid.drawGrid();
+      _grid.drawTops();
+    } break;
   }
-
+  glPopMatrix();
 }
 
 /** ********************************************************************** **/

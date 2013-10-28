@@ -82,10 +82,27 @@ void GLView::resizeGL(int width, int height) {
   **/
 void GLView::mousePressEvent(QMouseEvent *event) {
   if (event->button()==Qt::LeftButton) {
-    cout << "left mouse : " << event->x() << "," << event->y() << endl;
+      if(_choice!=0 && _choice!=1) {
+        cout << "left mouse : " << event->x() << "," << event->y() << endl;
+        double x = event->x();
+        double y = event->y();
+        x-= width()/2;
+        y-= height()/2;
+        y /= (height() / 2);
+        x /= (width() / 2);
+        x *= 10;
+        vector<Vector2> Ptemp(_P.size()+1);
+        int i=0;
+        for(i=0; i<_P.size(); i++)
+            Ptemp.at(i)=_P.at(i);
+        Ptemp.at(i)=Vector2(x,-y);
+        _P=Ptemp;
+        _m++;
+      }
   }
   if (event->button()==Qt::RightButton) {
     cout << "right mouse : " << event->x() << "," << event->y() << endl;
+    initializeGL();
   }
 }
 
@@ -151,8 +168,9 @@ void GLView::keyReleaseEvent(QKeyEvent *event) {
   **/
 void GLView::initData() {
     _p=2;
-    _m=4;
-    _choice=0;
+    _m=5;
+    vector<Vector2> P = {Vector2(1,0),Vector2(2,0.7),Vector2(3,0.8),Vector2(5,0.5),Vector2(4,0.3)};
+    _P=P;
 }
 
 void GLView::updateData() {
@@ -186,27 +204,39 @@ void GLView::paintGL() {
          * p=3 : /
          */
         glPopMatrix();
-        _choice=0;
     }
     if(_choice==2) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glPushMatrix();
-        vector<Vector2> P = {Vector2(1,0),Vector2(2,0.7),Vector2(3,0.8),Vector2(5,0.5),Vector2(4,0.3)};
         _nurbs->drawAllN(_p);
-        _nurbs->drawControlPolygone(P);
-        _nurbs->drawBSpline(P,_p);
+        _nurbs->drawControlPolygone(_P);
+        _nurbs->drawBSpline(_P,_p);
         glPopMatrix();
-        _choice=0;
     }
     if(_choice==3) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glPushMatrix();
-        vector<Vector2> P = {Vector2(1,0),Vector2(2,0.7),Vector2(3,0.8),Vector2(5,0.5),Vector2(4,0.3)};
-        _nurbs->runThroughCurves(P,_p);
+        _nurbs->drawAllN(_p);
+        _nurbs->drawControlPolygone(_P);
+        _nurbs->drawBSpline(_P,_p);
+        _t+=0.01;
+        if(_t<_nurbs->_knot.at(_P.size()))
+            _nurbs->runThroughCurves(_p,_t);
         glPopMatrix();
-        _choice=0;
     }
-    if(_choice==4) {}
+    if(_choice==4) {
+        /*glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glPushMatrix();
+        _nurbs->initializeNotUniformNodalVector(_m,_p);
+        _nurbs->drawAllN(_p);
+        _nurbs->drawControlPolygone(_P);
+        _nurbs->drawBSpline(_P,_p);
+        _t+=0.01;
+        std::cout << _P.size() << std::endl;
+        if(_t<_nurbs->_knot.at(_P.size()))
+            _nurbs->runThroughCurves(_p,_t);
+        glPopMatrix();*/
+    }
     if(_choice==5) {}
 }
 
@@ -214,9 +244,6 @@ void GLView::paintGL() {
 
 void GLView::choice1() { _choice=1; }
 void GLView::choice2() { _choice=2; }
-void GLView::choice3() { _choice=3; }
+void GLView::choice3() { _choice=3; _t=_nurbs->_knot.at(_p); }
 void GLView::choice4() { _choice=4; }
 void GLView::choice5() { _choice=5; }
-
-
-

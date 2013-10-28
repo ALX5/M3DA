@@ -41,8 +41,8 @@ MainWindow::MainWindow() :
 
   // application buttons
   _choice.clear();
-  _choice.push_back(new QPushButton("draw something"));
-  _choice.push_back(new QPushButton("draw squares"));
+  _choice.push_back(new QPushButton("Draw grid"));
+  _choice.push_back(new QPushButton("..."));
   _choice.push_back(new QPushButton("..."));
   _choice.push_back(new QPushButton("..."));
   _choice.push_back(new QPushButton("..."));

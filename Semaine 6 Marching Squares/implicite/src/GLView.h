@@ -15,6 +15,7 @@
 #include "UtilGL.h"
 #include <QtEvents>
 
+#include "grid.h"
 
 /**
   @class GLView
@@ -63,6 +64,9 @@ protected:
 private:
   int _choice;
   std::string _choiceText;
+
+  // Grille
+  Grid _grid;
 
 signals:
 

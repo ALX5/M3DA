@@ -2,8 +2,6 @@
 
 #include <GL/glew.h>
 
-#include <GL/glut.h>
-
 Nurbs::Nurbs() {}
 
 // Question 1
@@ -53,6 +51,7 @@ void Nurbs::drawAllN(int p) {
         drawN(k,p);
 }
 
+// Question 7
 void Nurbs::drawControlPolygone(std::vector<Vector2> P)  {
     glLineWidth(1);
     glColor3f(0,0,0);
@@ -92,29 +91,13 @@ void Nurbs::drawBSpline(vector<Vector2> P, int p) {
 }
 
 // Question 10
-double _t;
-void update(int value) {
-
-_t+=0.01;
-
-//glutPostRedisplay();
-
-//glutTimerFunc(25,update,0);
-
-}
-
-void Nurbs::runThroughCurves(vector<Vector2> P, int p) {
-    _P=P;
+void Nurbs::runThroughCurves(int p, double t) {
     glPointSize(5);
-    glColor3f(0,0,0);
-   // glutTimerFunc( 10, update, 1);
-    for(_t=_knot.at(p); _t<_knot.at(_P.size()); /*t+=0.01*/) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glBegin(GL_POINTS);
-        glVertex2f(evalBSpline(_t,p).getX()/_knot.size(),evalBSpline(_t,p).getY());
-        glVertex2f(_t/_knot.size()-1,0);
-        glEnd();
-    }
+    glColor3f(1,0,0);
+    glBegin(GL_POINTS);
+    glVertex2f(evalBSpline(t,p).getX()/_knot.size(),evalBSpline(t,p).getY());
+    glVertex2f(t/_knot.size()-1,0);
+    glEnd();
 }
 
 // Question 11
