@@ -1,7 +1,6 @@
 #ifndef VECTOR2_H
 #define VECTOR2_H
 
-/* Implémentation des vecteurs 2D */
 class Vector2  {
 
 public:
@@ -14,9 +13,10 @@ public:
     double getX() const {return x;}
     double getY() const {return y;}
 
-    // Opérateur de l'espace vectoriel
     Vector2 operator+(const Vector2 & v) const;
     Vector2 operator*(const double & d) const;
+
+    double distance(double x, double y);
 
 };
 

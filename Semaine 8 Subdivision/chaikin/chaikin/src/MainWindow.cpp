@@ -41,11 +41,9 @@ MainWindow::MainWindow() :
 
   // application buttons
   _choice.clear();
-  _choice.push_back(new QPushButton("Draw grid"));
-  _choice.push_back(new QPushButton("Draw curve points"));
-  _choice.push_back(new QPushButton("Draw curve"));
-  _choice.push_back(new QPushButton("Draw blobs points"));
-  _choice.push_back(new QPushButton("Draw blobs"));
+  _choice.push_back(new QPushButton("draw something")); // choice 0
+  _choice.push_back(new QPushButton("draw a square")); // choice 1
+  _choice.push_back(new QPushButton("...")); // ...
 
 
   // set up for the main window : set a central widget (main container), and set a gridLayout to this central widget
@@ -70,7 +68,6 @@ MainWindow::MainWindow() :
 }
 
 
-// slot from clicked buttons : calls GLView::choice(button number, button text)
 void MainWindow::choice() {
   QPushButton *b=dynamic_cast<QPushButton *>(QObject::sender());
   unsigned int i;
