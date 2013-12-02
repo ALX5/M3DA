@@ -13,6 +13,7 @@
 #include "glsupport.h"
 
 #include "UtilGL.h"
+#include "chaikin.h"
 #include <QtEvents>
 
 
@@ -31,6 +32,8 @@ public:
 
   //! initialize data application
   void initData();
+
+  Chaikin _chaikin;
 
 protected:
   // OpenGL drawing :
@@ -58,10 +61,12 @@ protected:
   // drawing choice
   void drawChoice0();
   void drawChoice1();
-  // etc ... void drawChoice2();
+  void drawChoice2();
+  void drawChoice3();
 
 private:
   int _choice;
+  int _lastChoice;
   std::string _choiceText;
 
 signals:
@@ -71,6 +76,8 @@ public slots:
   void updateData();
 
   void choice(int i, const std::string &s);
+
+
 };
 
 #endif // GLVIEW_H

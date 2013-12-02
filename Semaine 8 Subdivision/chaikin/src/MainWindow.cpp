@@ -41,9 +41,10 @@ MainWindow::MainWindow() :
 
   // application buttons
   _choice.clear();
-  _choice.push_back(new QPushButton("draw something")); // choice 0
-  _choice.push_back(new QPushButton("draw a square")); // choice 1
-  _choice.push_back(new QPushButton("...")); // ...
+  _choice.push_back(new QPushButton("Chaikin")); // choice 0
+  _choice.push_back(new QPushButton("4-points")); // choice 1
+  _choice.push_back(new QPushButton("Iterate")); // choice 2
+  _choice.push_back(new QPushButton("Reset")); // choice 3
 
 
   // set up for the main window : set a central widget (main container), and set a gridLayout to this central widget

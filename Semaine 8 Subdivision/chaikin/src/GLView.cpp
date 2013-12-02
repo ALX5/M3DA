@@ -82,11 +82,17 @@ void GLView::resizeGL(int width, int height) {
   Events
   **/
 void GLView::mousePressEvent(QMouseEvent *event) {
+  double x = event->x() / (double)(width()/2) -1;
+  double y = -(event->y() / (double)(height()/2) -1);
   if (event->button()==Qt::LeftButton) {
     cout << "left mouse : " << event->x() << "," << event->y() << endl;
+    bool b = false;
+    _chaikin.addPoint(x,y,b);
   }
   if (event->button()==Qt::RightButton) {
     cout << "right mouse : " << event->x() << "," << event->y() << endl;
+    bool b = true;
+    _chaikin.addPoint(x,y,b);
   }
 }
 
@@ -97,7 +103,6 @@ void GLView::mouseMoveEvent(QMouseEvent *event) {
 void GLView::mouseReleaseEvent(QMouseEvent *event) {
   switch(event->button()){
   case Qt::LeftButton:
-      cout << "left mouse released" << endl;
     break;
   case Qt::RightButton:
     break;
@@ -151,6 +156,7 @@ void GLView::keyReleaseEvent(QKeyEvent *event) {
   init/update data
   **/
 void GLView::initData() {
+    _chaikin = Chaikin();
 }
 
 void GLView::updateData() {
@@ -169,58 +175,27 @@ void GLView::updateData() {
 
 
 void GLView::drawChoice0() {
-  /// drawing example
-
-  glColor3f(0,0.5,1);
-  ugl::drawText("drawChoice0: "+_choiceText,0,0);
-
-  glPushMatrix();
-
-  glColor3f(1,0,0);
-  ugl::drawText("vertex ",0.2,0.2); // coordinates for drawText are (0,0) for top-left and (1,1) for bottom-right (not related to glOrtho)
-
-  glLineWidth(3);
-  glColor3f(0,1,0);
-  glBegin(GL_LINE_STRIP);
-  glVertex2f(0,-0.5);
-  glVertex2f(-0.5,0.5);
-  glVertex2f(0.5,0.5);
-  glVertex2f(0,-0.5);
-  glEnd();
-
-  glPointSize(10);
-  glColor3f(0,0,1);
-  glBegin(GL_POINTS);
-  glVertex2f(0,-0.5);
-  glVertex2f(-0.5,0.5);
-  glVertex2f(0.5,0.5);
-  glEnd();
-
-
-  glPopMatrix();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glPushMatrix();
+    _chaikin.drawCurves();
+    glPopMatrix();
 }
 
 void GLView::drawChoice1() {
-  glColor3f(0,0.2,1);
-  ugl::drawText("drawChoice1 :"+_choiceText,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glPushMatrix();
+    _chaikin.drawClosedCurves();
+    glPopMatrix();
+}
 
-  /// drawing example
-  glPushMatrix();
-
-  glColor3f(1,0,0);
-
-  glLineWidth(3);
-  glColor3f(0,1,0);
-  glBegin(GL_LINE_STRIP);
-  glVertex2f(-0.8,-0.8);
-  glVertex2f(0.8,-0.8);
-  glVertex2f(0.8,0.8);
-  glVertex2f(-0.8,0.8);
-  glVertex2f(-0.8,-0.8);
-  glEnd();
-
-
-  glPopMatrix();
+void GLView::drawChoice2() {
+    if(_lastChoice==0) _chaikin.approximate();
+    else if(_lastChoice==1) _chaikin.interpolate();
+    _choice=_lastChoice;
+}
+void GLView::drawChoice3() {
+    _chaikin.initializeCurves();
+    _choice=_lastChoice;
 }
 
 void GLView::paintGL() {
@@ -231,12 +206,16 @@ void GLView::paintGL() {
   /// choice example
   switch(_choice) {
     case 0:
-      /// call the drawing method for the clicked button 0 ...
       drawChoice0();
       break;
     case 1:
-      /// call the drawing method for the clicked button 1 ...
       drawChoice1();
+      break;
+    case 2:
+      drawChoice2();
+      break;
+    case 3:
+      drawChoice3();
       break;
   }
 
@@ -247,6 +226,7 @@ void GLView::paintGL() {
 void GLView::choice(int i,const string &s) {
   // i = button number, s = button text
   cout << "choice " << i << " " << s << endl;
+  _lastChoice=_choice;
   _choice=i;
   _choiceText=s;
 }
